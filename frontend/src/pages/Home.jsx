@@ -14,6 +14,7 @@ export default function Home() {
   const [albumData, setAlbumData] = useState(null);
 
   const goToAlbum = (e) => {
+    //
     setPasswordError(false);
   };
 
@@ -32,10 +33,13 @@ export default function Home() {
 
       // Validating the album code
       validateAlbumCode(albumCode.trim()).then(([isValid, data]) => {
-        console.log(isValid, data);
         if (isValid) {
           setAlbumCodeVerified(true);
-          if (data.passCode === 1) setPasswordRequired(true);
+          if (data.passCode === 1) {
+            setPasswordRequired(true);
+          } else {
+            // Move to next page (Album)
+          }
           setLoading(false);
         } else {
           setError(true);
@@ -78,7 +82,14 @@ export default function Home() {
                 Find the Code on backside of your album. If Not Found, Please
                 contact your Photography Company.
               </div>
-              <form>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  albumCodeVerified && isPasswordRequired
+                    ? goToAlbum()
+                    : verifyCode();
+                }}
+              >
                 <input
                   type="text"
                   name="code"
@@ -121,14 +132,14 @@ export default function Home() {
                   </>
                 )}
               </form>
-              {albumCodeVerified ? (
+              {albumCodeVerified && isPasswordRequired ? (
                 <button
                   onClick={goToAlbum}
                   class={`btn btn-pink text-light my-2 w-auto ${
                     loading ? "d-none" : ""
                   }`}
                 >
-                  View Photobook
+                  Login
                 </button>
               ) : (
                 <button
