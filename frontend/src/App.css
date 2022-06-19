@@ -104,28 +104,32 @@ body {
   box-shadow: 0px 0px 15px 0px rgb(73, 73, 73);
 }
 .ele {
-  animation-name: floating;
+  /* animation-name: floating;
   animation-duration: 3s;
   animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-  /* position: absolute; */
+  animation-timing-function: ease-in-out; */
+
+  position: absolute;
   top: 0;
   right: 0%;
-  width: 5vw;
-  height: 5vw;
-  background: blue;
-  -moz-border-radius: 70px;
-  -webkit-border-radius: 70px;
-  border-radius: 70px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 50px 50px 0;
+  border-color: transparent #ff00a6 transparent transparent;
 }
 @keyframes floating {
   from {
     transform: translate(0, 0px);
   }
   65% {
-    transform: translate(0, 15px);
+    transform: translate(0, 5px);
   }
   to {
     transform: translate(0, -0px);
   }
+}
+
+.text-small {
+  font-size: 12px;
 }
