@@ -1,15 +1,50 @@
 import React from "react";
 import { useState } from "react";
 import Layout from "./Layout";
+import { validateAlbumCode } from "../actions/firestoreActions";
 
 export default function Home() {
   const [albumCode, setAlbumCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [albumCodeVerified, setAlbumCodeVerified] = useState(false);
+  const [isPasswordRequired, setPasswordRequired] = useState(false);
   const [error, setError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [albumData, setAlbumData] = useState(null);
 
   const goToAlbum = (e) => {
+    setPasswordError(false);
+  };
+
+  const verifyCode = (e) => {
+    setLoading(true);
     if (albumCode !== "") {
+      // On album loading, check for
+      // if the album id provided in route is valid
+      // if not valid, show 404 component,
+      // else,
+      // check if album id already stored in session, yes, directly show the album
+      // else,
+      // check if this album is password protected
+      // if yes, redirect to home page and prompt them to enter password
+      // if no, directly show the album
+
+      // Validating the album code
+      validateAlbumCode(albumCode.trim()).then(([isValid, data]) => {
+        console.log(isValid, data);
+        if (isValid) {
+          setAlbumCodeVerified(true);
+          if (data.passCode === 1) setPasswordRequired(true);
+          setLoading(false);
+        } else {
+          setError(true);
+          setLoading(false);
+        }
+      });
     } else {
       setError(true);
+      setLoading(false);
     }
   };
 
@@ -59,13 +94,58 @@ export default function Home() {
                 >
                   Please Enter a Valid Album Code.
                 </small>
+
+                {isPasswordRequired && (
+                  <>
+                    <div className="mt-4">
+                      Seems Like this Album Requires a password. Please enter
+                      the password.
+                    </div>
+
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      className="form-control mt-3 mb-2 bg-dark text-light"
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                    />
+                    <small
+                      class={`form-text mb-3 text-muted ${
+                        passwordError ? "" : "d-none"
+                      }`}
+                    >
+                      The Password is incorrect.
+                    </small>
+                  </>
+                )}
               </form>
-              <button
-                onClick={goToAlbum}
-                class="btn btn-pink text-light my-2 w-auto"
-              >
-                View Photobook
-              </button>
+              {albumCodeVerified ? (
+                <button
+                  onClick={goToAlbum}
+                  class={`btn btn-pink text-light my-2 w-auto ${
+                    loading ? "d-none" : ""
+                  }`}
+                >
+                  View Photobook
+                </button>
+              ) : (
+                <button
+                  onClick={verifyCode}
+                  class={`btn btn-pink text-light my-2 w-auto ${
+                    loading ? "d-none" : ""
+                  }`}
+                >
+                  View Photobook
+                </button>
+              )}
+              <div class={`lds-ring ${loading ? "" : "d-none"}`}>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
             </div>
           </div>
         </div>
@@ -73,3 +153,14 @@ export default function Home() {
     </Layout>
   );
 }
+
+const randomStr = (length) => {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
