@@ -10,6 +10,7 @@ import "./App.css";
 import { AlbumPropLoader } from "./pages/Album";
 import Home from "./pages/Home";
 import Error404 from "./pages/Error404";
+import CreateAlbum from "./pages/CreateAlbum";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Switch>
           <Route exact path="/album/:id" component={AlbumPropLoader} />
           <Route exact path="/" component={Home} />
+          <Route exact path="/admin/upload-album" component={CreateAlbum} />
           <Route exact path="/404" component={Error404} />
           <Redirect to="/" />
         </Switch>
