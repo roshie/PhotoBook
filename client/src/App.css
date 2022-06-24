@@ -193,3 +193,20 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #353535d7;
 }
+
+.gradient-on-hover:hover {
+  cursor: pointer;
+  background: linear-gradient(to right, #74215a, #ec1375);
+  color: white;
+}
+
+::-webkit-file-upload-button {
+  display: none;
+}
+::file-selector-button {
+  display: none;
+}
+
+.text-black {
+  color: #131313;
+}

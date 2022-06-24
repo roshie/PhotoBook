@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import Layout from "./Layout";
+import Layout from "./Components/Layout";
 import { validateAlbumCode } from "../actions/firestoreActions";
 import {
   getAuth,

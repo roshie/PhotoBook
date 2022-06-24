@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "./Layout";
+import Layout from "./Components/Layout";
 import "./../Album.css";
 import whiteImg from "../img/white-texture.jpg";
 import Loader from "../img/AlbumLoader.gif";
