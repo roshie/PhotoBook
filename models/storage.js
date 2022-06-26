@@ -37,10 +37,21 @@ class Storage {
     );
     return downloaded;
   }
+
+  async createContainer(name) {
+    const containerName =
+      name
+        .substring(0, name.length() > 15 ? 15 : name.length())
+        .toLowerCase()
+        .replace(" ", "-") + uuidv1();
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    // Create the container
+    const createContainerResponse = await containerClient.create();
+  }
 }
 
 // utility Function
-async function streamToBuffer(readableStream) {
+const streamToBuffer = async (readableStream) => {
   return new Promise((resolve, reject) => {
     const chunks = [];
     readableStream.on("data", (data) => {
@@ -51,6 +62,17 @@ async function streamToBuffer(readableStream) {
     });
     readableStream.on("error", reject);
   });
-}
+};
+
+const randomStr = (length) => {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
 
 module.exports = Storage;

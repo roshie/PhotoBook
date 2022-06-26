@@ -5,6 +5,7 @@ import {
   query,
   where,
   getDocs,
+  addDoc,
 } from "firebase/firestore";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -33,6 +34,13 @@ export function validateAlbumCode(code) {
       }
     });
     return [valid, data];
+  });
+}
+
+export function createAlbumDoc(data) {
+  // Add a new document with a generated id.
+  return addDoc(collection(db, "Albums"), data).then((docRef) => {
+    return docRef.id;
   });
 }
 
