@@ -5,7 +5,7 @@ import logo from "../../img/logo.png";
 
 export default function Layout(props) {
   return (
-    <>
+    <div id="pageLayout">
       <nav className="navbar navbar-expand-lg navbar-dark p-4 m-2">
         <div className="d-flex justify-content-between">
           <img src={logo} alt="" className="logo" />
@@ -45,7 +45,7 @@ export default function Layout(props) {
       ) : (
         <>{props.children}</>
       )}
-      <div className="ele"></div>
-    </>
+      {/* <div className="ele"></div> */}
+    </div>
   );
 }

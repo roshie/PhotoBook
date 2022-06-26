@@ -7,11 +7,46 @@ export default function UploadAlbum() {
   const [passCode, setPasscode] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [coverImage, setCoverImage] = useState(false);
   const [requirePasscode, setRequirePasscode] = useState(false);
+  const [droppedFiles, setDroppedFiles] = useState([]);
+  const [droppedFilesLength, setDroppedFilesLength] = useState(0);
+  const [previewImg, setPreviewImg] = useState(null);
+  const [previewImgLoading, setPreviewImgLoading] = useState(false);
 
   const createAlbum = () => {
     setLoading(true);
     setLoading(false);
+  };
+
+  const removeImage = (index) => {
+    setPreviewImgLoading(true);
+    let remainingFiles = droppedFiles.filter((val, inx) => {
+      return inx != index;
+    });
+    if (remainingFiles.length <= 0) {
+      setDroppedFiles([]);
+      setDroppedFilesLength(0);
+    } else {
+      setDroppedFiles(remainingFiles);
+      setDroppedFilesLength(remainingFiles.length);
+    }
+
+    console.log(index, "Removed");
+    console.log("Array", remainingFiles);
+    setPreviewImgLoading(false);
+  };
+
+  const previewImage = (index) => {
+    console.log(index, "Preview");
+    const len = droppedFiles.length;
+    setPreviewImgLoading(true);
+    if (index > len - 1) {
+      setPreviewImg(
+        len <= 0 ? null : URL.createObjectURL(droppedFiles[index - 1])
+      );
+    } else setPreviewImg(URL.createObjectURL(droppedFiles[index]));
+    setPreviewImgLoading(false);
   };
 
   useEffect(() => {
@@ -25,11 +60,17 @@ export default function UploadAlbum() {
     else setDisabled(true);
   }, [name, email, passCode, requirePasscode]);
 
-  const uploadMultipleFiles = () => {};
+  const uploadMultipleFiles = (e) => {
+    setPreviewImgLoading(true);
+    droppedFiles.push(...e.target.files);
+    setDroppedFiles(droppedFiles);
+    setDroppedFilesLength(droppedFiles.length);
+    setPreviewImg(URL.createObjectURL(droppedFiles[droppedFiles.length - 1]));
+  };
 
   return (
     <Layout>
-      <div className="row mt-5">
+      <div className="row my-5">
         <div className="m-auto p-5 border border-dark rounded light-shadow text-light w-75">
           <h4 className="font-weight-bold">Upload Album</h4>
           <form>
@@ -116,24 +157,82 @@ export default function UploadAlbum() {
 
             <div className="h6 mt-3">Upload Album Images</div>
             <div className="row d-flex justify-content-center">
-              <div className="col-12 col-md-5 border border-light rounded m-2 p-0">
+              <div className="col-12 col-md-5 border border-light rounded m-2 p-0 upload">
                 <label for="imgDrop" className="w-100 h-100 p-0">
                   <input
                     type="file"
                     id="imgDrop"
-                    className="h-100 text-black m-5"
+                    style={{ minHeight: "100px" }}
+                    className="text-black h-100"
                     accept="image/jpg, image/jpeg"
                     onChange={uploadMultipleFiles}
+                    files={droppedFiles}
                     multiple
                   />
                 </label>
               </div>
-              <div className="col-12 col-md-6 border border-dark rounded m-2 text-center text-dark">
-                <div className="m-5">No images selected</div>
+              <div className="col-12 col-md-6 border border-dark rounded m-2 text-center text-dark p-0 overflow-hidden d-flex justify-content-center align-items-center">
+                {previewImg == null ? (
+                  <div className="m-5">No images selected</div>
+                ) : (
+                  <img
+                    src={previewImg}
+                    alt="image"
+                    style={{
+                      maxWidth: "300px",
+                    }}
+                  />
+                )}
               </div>
             </div>
-            <div className="col-12 border border-dark rounded my-2 p-5">
-              image Sequence
+            <div className="h6 mt-3">
+              {droppedFilesLength > 0
+                ? `${droppedFilesLength} file${
+                    droppedFilesLength > 1 ? "s" : ""
+                  }`
+                : "No File"}{" "}
+              selected
+            </div>
+            <div className="col-12 border border-dark rounded my-2 p-1">
+              <div className="row m-1 justify-content-center">
+                {previewImgLoading ? (
+                  <div class={`lds-ring my-5`}>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                ) : (
+                  droppedFiles.map((file, index) => {
+                    return (
+                      <ImgCard
+                        image={file}
+                        imageName={file.name}
+                        index={index}
+                        cover={coverImage}
+                        previewImage={previewImage}
+                        removeImage={removeImage}
+                        setPreviewImgLoading={setPreviewImgLoading}
+                      />
+                    );
+                  })
+                )}
+              </div>
+            </div>
+            <div className="form-group form-check mt-3">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="cover"
+                style={{ transform: "scale(1.5)" }}
+                value={coverImage}
+                onChange={(e) => {
+                  setCoverImage(e.target.checked);
+                }}
+              />
+              <label className="form-check-label" for="cover">
+                Make First Image as Cover Image
+              </label>
             </div>
 
             <button
@@ -157,3 +256,54 @@ export default function UploadAlbum() {
     </Layout>
   );
 }
+
+const ImgCard = (props) => {
+  const { setPreviewImgLoading } = props;
+  return (
+    <div
+      className="border border-dark rounded shadow-on-hover m-1"
+      style={{ minHeight: "100px", minWidth: "100px" }}
+      onClick={() => {
+        props.previewImage(props.index);
+      }}
+    >
+      <div className="col-12 h-100">
+        <span
+          id="imgCard"
+          onClick={() => {
+            props.removeImage(props.index);
+          }}
+        >
+          ⓧ
+        </span>
+        <span className="index">
+          {props.cover
+            ? props.index == 0
+              ? "Cover"
+              : props.index
+            : props.index + 1}
+        </span>
+        <img
+          style={{ maxWidth: "100px", marginTop: "10px" }}
+          title={props.imageName}
+          src={URL.createObjectURL(props.image)}
+          onLoad={() => {
+            setPreviewImgLoading(false);
+          }}
+        />
+        <div
+          style={{
+            fontSize: "12px",
+            textAlign: "center",
+            marginTop: "8px",
+            marginBottom: "8px",
+          }}
+        >
+          <div className="text-truncate" style={{ maxWidth: "90px" }}>
+            {props.imageName}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

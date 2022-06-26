@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "./Components/Layout";
 import { validateAlbumCode } from "../actions/firestoreActions";
 import {
@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { Redirect } from "react-router-dom";
 
-export default function Home() {
+export default function Home(props) {
   const [albumCode, setAlbumCode] = useState("");
   const [password, setPassword] = useState("");
   const [albumCodeVerified, setAlbumCodeVerified] = useState(false);
@@ -21,6 +21,11 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [albumData, setAlbumData] = useState(null);
   const auth = getAuth();
+
+  useEffect(() => {
+    const code = new URLSearchParams(props.location.search).get("c");
+    if (code) setAlbumCode(code);
+  }, []);
 
   const goToAlbum = (e) => {
     setPasswordVerified(false);
@@ -58,9 +63,9 @@ export default function Home() {
         .then(([isValid, data]) => {
           if (isValid) {
             setAlbumData(data);
-            setAlbumCodeVerified(true);
             if (data.passCode === 1) {
               setPasswordRequired(true);
+              setAlbumCodeVerified(true);
               const user = auth.currentUser;
               if (user != null && user.email == data.email) {
                 // Move to next page (Album)
@@ -70,6 +75,7 @@ export default function Home() {
                 setPasswordVerified(false);
               }
             } else {
+              setAlbumCodeVerified(true);
               // Move to next page (Album)
               console.log("Success");
             }
@@ -142,6 +148,7 @@ export default function Home() {
                     name="code"
                     id="code"
                     className="form-control mt-3 mb-2 bg-dark text-light"
+                    value={albumCode}
                     onChange={(e) => {
                       e.target.value !== "" && setError(false);
                       setAlbumCode(e.target.value);
