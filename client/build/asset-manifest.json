@@ -1,25 +1,27 @@
 {
   "files": {
-    "main.css": "/static/css/main.0da5ff9f.chunk.css",
-    "main.js": "/static/js/main.f99ed329.chunk.js",
-    "main.js.map": "/static/js/main.f99ed329.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.0a447bbb.js",
-    "runtime-main.js.map": "/static/js/runtime-main.0a447bbb.js.map",
-    "static/js/2.2101486f.chunk.js": "/static/js/2.2101486f.chunk.js",
-    "static/js/2.2101486f.chunk.js.map": "/static/js/2.2101486f.chunk.js.map",
-    "static/js/3.bfb332d7.chunk.js": "/static/js/3.bfb332d7.chunk.js",
-    "static/js/3.bfb332d7.chunk.js.map": "/static/js/3.bfb332d7.chunk.js.map",
+    "main.css": "/static/css/main.e2779d76.chunk.css",
+    "main.js": "/static/js/main.256b5026.chunk.js",
+    "main.js.map": "/static/js/main.256b5026.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.9bde036c.js",
+    "runtime-main.js.map": "/static/js/runtime-main.9bde036c.js.map",
+    "static/js/2.3eaa2a09.chunk.js": "/static/js/2.3eaa2a09.chunk.js",
+    "static/js/2.3eaa2a09.chunk.js.map": "/static/js/2.3eaa2a09.chunk.js.map",
+    "static/js/3.8cb565d1.chunk.js": "/static/js/3.8cb565d1.chunk.js",
+    "static/js/3.8cb565d1.chunk.js.map": "/static/js/3.8cb565d1.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.0da5ff9f.chunk.css.map": "/static/css/main.0da5ff9f.chunk.css.map",
-    "static/js/2.2101486f.chunk.js.LICENSE.txt": "/static/js/2.2101486f.chunk.js.LICENSE.txt",
+    "static/css/main.e2779d76.chunk.css.map": "/static/css/main.e2779d76.chunk.css.map",
+    "static/js/2.3eaa2a09.chunk.js.LICENSE.txt": "/static/js/2.3eaa2a09.chunk.js.LICENSE.txt",
     "static/media/AlbumLoader.25d06eb8.gif": "/static/media/AlbumLoader.25d06eb8.gif",
+    "static/media/blue-cover.277cd565.jpg": "/static/media/blue-cover.277cd565.jpg",
     "static/media/logo.42af7f30.png": "/static/media/logo.42af7f30.png",
+    "static/media/red-cover.001a49b2.png": "/static/media/red-cover.001a49b2.png",
     "static/media/white-texture.62a2ef74.jpg": "/static/media/white-texture.62a2ef74.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.0a447bbb.js",
-    "static/js/2.2101486f.chunk.js",
-    "static/css/main.0da5ff9f.chunk.css",
-    "static/js/main.f99ed329.chunk.js"
+    "static/js/runtime-main.9bde036c.js",
+    "static/js/2.3eaa2a09.chunk.js",
+    "static/css/main.e2779d76.chunk.css",
+    "static/js/main.256b5026.chunk.js"
   ]
 }
