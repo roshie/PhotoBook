@@ -154,6 +154,11 @@ body {
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #fff transparent transparent transparent;
 }
+
+.lds-ring-black div {
+  border: 4px solid rgb(0, 0, 0) !important;
+  border-color: rgb(0, 0, 0) transparent transparent transparent !important;
+}
 .lds-ring div:nth-child(1) {
   animation-delay: -0.45s;
 }
@@ -209,4 +214,50 @@ body {
 
 .text-black {
   color: #131313;
+}
+
+.upload {
+  background-image: url("img/uploadicon.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode: soft-light;
+  border-style: dashed !important;
+}
+
+.upload::after {
+  content: "Drop files Here or Click here to upload images";
+  text-align: center;
+  font-size: 12px;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.311);
+}
+
+.shadow-on-hover {
+  cursor: pointer;
+}
+
+.shadow-on-hover:hover {
+  box-shadow: 0px 0px 15px 0px rgb(73, 73, 73);
+}
+
+#imgCard {
+  position: absolute;
+  top: -10%;
+  right: -5%;
+}
+
+.index {
+  background-color: #ec1375;
+  height: 20px;
+  text-align: center;
+  padding: 3px 2px 1px 2px;
+  min-width: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  position: absolute;
+  top: 0%;
+  left: 5%;
 }
