@@ -1,10 +1,12 @@
 const { Router } = require("express");
 const router = Router();
 
-const { getSheets } = require("../controllers/sheets");
+const { getSheet } = require("../controllers/sheets");
+const { getSheetNames } = require("../controllers/sheets");
 const { postSheets } = require("../controllers/sheets");
 
-router.get("/", getSheets);
+router.get("/", getSheet);
+router.get("/names", getSheetNames);
 router.post("/", postSheets);
 
 module.exports = router;
