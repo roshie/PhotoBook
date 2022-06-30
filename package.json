@@ -20,6 +20,8 @@
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
     "express-validator": "^6.10.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-azure": "^2.0.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
