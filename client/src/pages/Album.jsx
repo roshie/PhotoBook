@@ -46,7 +46,6 @@ export function AlbumPropLoader(props) {
       return <Redirect to={`/?c=${code}`} />;
     }
   } else if (isValid === false) {
-    console.log("Redirecting 404");
     return <Redirect to="/404" />;
   } else {
     return <></>;
@@ -73,7 +72,6 @@ function Album(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setSheets(res.sheetNames);
         setSheetDetails(res.sheetDetails);
         setLoading(false);
@@ -102,13 +100,13 @@ function Album(props) {
   const nextButtonClick = () => {
     if (flipBook.current && flipBook.current.pageFlip()) {
       flipBook.current.pageFlip().flipNext();
-    } else console.log("no");
+    }
   };
 
   const prevButtonClick = () => {
     if (flipBook.current && flipBook.current.pageFlip()) {
       flipBook.current.pageFlip().flipPrev();
-    } else console.log("no");
+    }
   };
 
   const onPage = (e) => {
@@ -232,7 +230,15 @@ function Album(props) {
           </HTMLFlipBook>
           <div className="row navigation-row align-items-start mb-5">
             <button className="btn text-light"></button>
-            <button className="btn text-light">
+
+            <button
+              type="button"
+              className="btn text-light"
+              data-container="body"
+              data-toggle="popover"
+              data-placement="top"
+              data-content="Oops! The Google Drive link for this folder is not available."
+            >
               <FontAwesomeIcon icon={faGoogleDrive} />
             </button>
             <button

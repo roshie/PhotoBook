@@ -112,7 +112,7 @@ export default function Home(props) {
           <div className="col-12 col-lg-6">
             <div className="m-xl-5 pl-lg-5 m-md-3 text-center text-lg-left">
               <div className="ml-lg-5 text-dark">GRAVITY STUDIO</div>
-              <div className="ml-lg-5 py-1 h1 font-weight-bold text-light gradient-text overflow-visible">
+              <div className="ml-lg-5 mx-1 py-1 h1 font-weight-bold text-light gradient-text overflow-visible">
                 View Your <br />
                 Photobook Online.
               </div>
@@ -135,7 +135,7 @@ export default function Home(props) {
                 Enter your Photobook code here
                 <br />
                 <div className="text-small text-gray my-2">
-                  Find the Code on backside of your album. If Not Found, Please
+                  Find the Code on backside of your album. If not found, Please
                   contact your Photography Company.
                 </div>
                 <form
@@ -166,8 +166,8 @@ export default function Home(props) {
                   {isPasswordRequired && (
                     <>
                       <div className="mt-4">
-                        Seems Like this Album Requires a password. Please enter
-                        the password.
+                        Seems Like this Album Requires a PassCode. Please Enter
+                        the PassCode.
                       </div>
 
                       <input
@@ -184,7 +184,7 @@ export default function Home(props) {
                           passwordError ? "" : "d-none"
                         }`}
                       >
-                        The Password is incorrect.
+                        The PassCode is incorrect.
                       </small>
                     </>
                   )}
