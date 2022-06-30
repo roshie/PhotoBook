@@ -99,8 +99,6 @@ export default function UploadAlbum() {
     setPreviewImgLoading(true);
     removeImg(index).then((res) => {
       if (res) {
-        console.log(index, "Removed");
-
         setPreviewImgLoading(false);
       }
     });

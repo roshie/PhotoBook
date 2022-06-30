@@ -64,7 +64,7 @@ class Storage {
     name = name.replace(/[^a-z0-9]/gi, "");
     const containerName =
       name.substring(0, name.length > 15 ? 15 : name.length).toLowerCase() +
-      uuidv1();
+      uuidv1().substring(0, 8);
     const containerClient =
       this.blobServiceClient.getContainerClient(containerName);
     // Create the container
