@@ -155,7 +155,7 @@ const AdminHome = () => {
                 redirect("ModifyAlbum");
               }}
             >
-              Modify Album
+              Modify Album (Disabled)
             </div>
           </div>
         </div>

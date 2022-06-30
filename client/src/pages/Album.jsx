@@ -20,8 +20,7 @@ import { Redirect } from "react-router-dom";
 import { validateAlbumCode } from "../actions/firestoreActions";
 import { useState, useEffect, useRef } from "react";
 import { getAuth } from "firebase/auth";
-
-const _url = "http://localhost:3001";
+import { _url } from "../globals";
 
 export function AlbumPropLoader(props) {
   const [isValid, setValid] = useState(null);
@@ -74,6 +73,7 @@ function Album(props) {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log(res);
         setSheets(res.sheetNames);
         setSheetDetails(res.sheetDetails);
         setLoading(false);
@@ -125,21 +125,25 @@ function Album(props) {
   };
 
   const pageFn = {
-    getCover: (_sheetDetails, side) => {
-      if (_sheetDetails.cover) {
-        return { url: `${url}cover-${side}.jpg` };
+    getCover: () => {
+      if (sheetDetails.cover) {
+        return { url: `${url}cover.jpg` };
       }
       return {};
     },
-    getFirstAndLastPage: (_sheetDetails, page) => {
-      if (_sheetDetails.firstPage || _sheetDetails.lastPage) {
-        return { url: `${url}${page}-page.jpg` };
+    getFirstAndLastPage: (page) => {
+      if (sheetDetails.firstPage || sheetDetails.lastPage) {
+        return { url: `${url}${page}.jpg` };
       }
     },
-    getInnerPages: function* (_sheetDetails) {
-      for (var i = 1; i <= _sheetDetails.innerSheetsCount; i++) {
+    getInnerPages: function* () {
+      for (var i = 1; i <= sheetDetails.innerSheetsCount; i++) {
         yield {
-          type: i % 2 == 0 ? "right" : "left",
+          type: "left",
+          url: `${url}${i}.jpg`,
+        };
+        yield {
+          type: "right",
           url: `${url}${i}.jpg`,
         };
       }
@@ -207,37 +211,23 @@ function Album(props) {
             style={{ transform: `translateX(${albumPositionTranslation})` }}
             ref={flipBook}
           >
-            <PageCover
-              type="right"
-              cover={true}
-              {...pageFn.getCover(sheetDetails, "front")}
-            />
-            <PageCover type="right" />
+            <PageCover type="right" cover={true} {...pageFn.getCover()} />
+            <PageCover type="left" />
 
             {/* first half Page */}
-            <Page
-              type="right"
-              {...pageFn.getFirstAndLastPage(sheetDetails, "first")}
-            />
+            <Page type="right" {...pageFn.getFirstAndLastPage("first")} />
 
             {/* inner covers */}
-            {range(sheetDetails.innerSheetsCount).map((n) => {
+            {range(sheetDetails.innerSheetsCount * 2).map((n) => {
               return <Page {...pageIterator.next().value} />;
             })}
             {/* end of inner covers */}
 
             {/* last half Page */}
-            <Page
-              type="left"
-              {...pageFn.getFirstAndLastPage(sheetDetails, "last")}
-            />
+            <Page type="left" {...pageFn.getFirstAndLastPage("last")} />
 
             <PageCover type="right" />
-            <PageCover
-              type="right"
-              cover={true}
-              {...pageFn.getCover(sheetDetails, "back")}
-            />
+            <PageCover type="left" cover={true} {...pageFn.getCover()} />
           </HTMLFlipBook>
           <div className="row navigation-row align-items-start mb-5">
             <button className="btn text-light"></button>
@@ -279,8 +269,10 @@ function Album(props) {
 
 const PageCover = React.forwardRef((props, ref) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [style, setstyle] = useState({
     backgroundImage: `url(${props.cover ? RedCover : whiteImg})`,
+    backgroundPosition: "center",
   });
   useEffect(() => {
     if (props.url) {
@@ -289,11 +281,15 @@ const PageCover = React.forwardRef((props, ref) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setstyle({ backgroundImage: `url("${data.image}")` });
+          setstyle({
+            backgroundImage: `url("${data.image}")`,
+            backgroundPosition: props.type === "right" ? "100% 0%" : "0% 0%",
+          });
           setLoading(false);
         })
         .catch((err) => {
-          setstyle(...style, { content: "Error While Loading this Picture" });
+          setError(true);
+          setstyle({ ...style, content: "Error While Loading this Picture" });
         });
     } else {
       setLoading(false);
@@ -306,7 +302,6 @@ const PageCover = React.forwardRef((props, ref) => {
           ...style,
           height: "100%",
           width: "100%",
-          backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}
@@ -321,6 +316,11 @@ const PageCover = React.forwardRef((props, ref) => {
             </div>
           </div>
         )}
+        {error && (
+          <div className="h-100 d-flex align-items-center justify-content-center">
+            Error Loading Page
+          </div>
+        )}
       </div>
     </div>
   );
@@ -328,6 +328,7 @@ const PageCover = React.forwardRef((props, ref) => {
 
 const Page = React.forwardRef((props, ref) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [style, setstyle] = useState({});
   useEffect(() => {
     if (props.url) {
@@ -336,14 +337,21 @@ const Page = React.forwardRef((props, ref) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setstyle({ backgroundImage: `url("${data.image}")` });
+          setstyle({
+            backgroundImage: `url("${data.image}")`,
+            backgroundPosition: props.type === "right" ? "100% 0%" : "0% 0%",
+          });
           setLoading(false);
         })
         .catch((err) => {
+          setError(true);
           setstyle({ ...style, content: "Error While Loading this Picture" });
         });
     } else {
-      setstyle({ backgroundImage: `url("${whiteImg}")` });
+      setstyle({
+        backgroundImage: `url("${whiteImg}")`,
+        backgroundPosition: "center",
+      });
       setLoading(false);
     }
   }, []);
@@ -356,7 +364,6 @@ const Page = React.forwardRef((props, ref) => {
           backgroundColor: "white",
           height: "100%",
           width: "100%",
-          backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}
@@ -369,6 +376,11 @@ const Page = React.forwardRef((props, ref) => {
               <div></div>
               <div></div>
             </div>
+          </div>
+        )}
+        {error && (
+          <div className="h-100 d-flex align-items-center justify-content-center">
+            Error Loading Page
           </div>
         )}
       </div>
