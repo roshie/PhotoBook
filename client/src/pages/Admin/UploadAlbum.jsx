@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../Components/Layout";
 import { createAlbumDoc } from "../../actions/firestoreActions";
+import { appUrl, _url } from "../../globals";
 
 export default function UploadAlbum() {
   const [name, setName] = useState("");
@@ -21,20 +22,54 @@ export default function UploadAlbum() {
 
   const createAlbum = () => {
     setLoading(true);
-    // TODO: create container and upload images
-    const data = {
-      containerId: "", // put container id here
+    const albumData = {
+      containerId: "", // get containerId from server
       cover: coverImage ? 1 : 0,
       email,
       height,
-      passCode: passCode ? 1 : 0,
+      width,
+      passCode: requirePasscode ? 1 : 0,
       startsWithHalfPage: startsWithHalfImage ? 1 : 0,
       title: name,
-      width,
     };
-    createAlbumDoc(data).then((id) => {
-      setLoading(false);
-      setAlbumId(id);
+
+    var formData = new FormData();
+    formData.append("title", name);
+    for (var i = 0; i < droppedFiles.length; i++)
+      formData.append(
+        "imgFiles",
+        droppedFiles[i],
+        getLabel({
+          index: i,
+          cover: coverImage,
+          halfImage: startsWithHalfImage,
+          length: droppedFiles.length,
+          fileName: true,
+        })
+      );
+
+    sendData(formData)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (res.message === "success") {
+          albumData.containerId = res.containerId;
+          createAlbumDoc(albumData, passCode).then((id) => {
+            setLoading(false);
+            setAlbumId(id);
+          });
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const sendData = async (formData) => {
+    return fetch(`${_url}/api/sheets`, {
+      method: "POST",
+      body: formData,
     });
   };
 
@@ -103,7 +138,8 @@ export default function UploadAlbum() {
 
   const uploadMultipleFiles = (e) => {
     setPreviewImgLoading(true);
-    droppedFiles.push(...e.target.files);
+    for (var i = e.target.files.length - 1; i >= 0; i--)
+      droppedFiles.push(e.target.files[i]);
     setDroppedFiles(droppedFiles);
     setDroppedFilesLength(droppedFiles.length);
     setPreviewImg(URL.createObjectURL(droppedFiles[droppedFiles.length - 1]));
@@ -114,7 +150,30 @@ export default function UploadAlbum() {
     <Layout>
       <div className="row my-5">
         {albumId !== null ? (
-          <div className="m-auto p-5">Your Album Id is: {albumId}</div>
+          <div className="m-auto p-5 text-light">
+            <div className="h1 m-5">Success!</div>
+            <div className="mt-5 text-center">
+              View Album{" "}
+              <a
+                target="_blank"
+                className="btn btn-pink text-light m-2"
+                href={`${appUrl}/album/${albumId}`}
+              >
+                Here
+              </a>
+            </div>
+            {requirePasscode && (
+              <div>
+                <div className="h6 mt-3">PassCode</div>
+                <input
+                  type="password"
+                  readOnly
+                  className="form-control mt-3 mb-2 bg-dark text-light"
+                  value={passCode}
+                />
+              </div>
+            )}
+          </div>
         ) : (
           <div className="m-auto p-5 border border-dark rounded light-shadow text-light w-75">
             <h4 className="font-weight-bold">Upload Album</h4>
@@ -300,6 +359,7 @@ export default function UploadAlbum() {
 
               <button
                 onClick={createAlbum}
+                type="button"
                 disabled={disabled}
                 class={`btn btn-pink text-light my-2 w-auto ${
                   loading ? "d-none" : ""
@@ -321,26 +381,27 @@ export default function UploadAlbum() {
   );
 }
 
+const getLabel = ({ index, cover, halfImage, length, fileName = false }) => {
+  if (cover && index == 0) {
+    return fileName ? "cover.jpg" : "Cover";
+  } else if ((cover && halfImage && index == 1) || (halfImage && index == 0)) {
+    return fileName ? "first.jpg" : "F";
+  } else if (halfImage && index == length - 1) {
+    return fileName ? "last.jpg" : "L";
+  } else if (cover && halfImage) {
+    return fileName ? `${index - 1}.jpg` : index - 1;
+  } else if (cover || halfImage) {
+    return fileName ? `${index}.jpg` : index;
+  } else {
+    return fileName ? `${index + 1}.jpg` : index + 1;
+  }
+};
+
 const ImgCard = (props) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
   }, []);
-
-  const getLabel = () => {
-    if (props.cover && props.index == 0) {
-      return "Cover";
-    } else if (
-      (props.cover && props.halfImage && props.index == 1) ||
-      (props.halfImage && props.index == 0)
-    ) {
-      return "F";
-    } else if (props.halfImage && props.index == props.length - 1) {
-      return "L";
-    } else if (props.cover && props.halfImage) return props.index - 1;
-    else if (props.cover || props.halfImage) return props.index;
-    else return props.index + 1;
-  };
 
   return (
     <div
@@ -356,7 +417,14 @@ const ImgCard = (props) => {
         >
           ⓧ
         </span>
-        <span className="index">{getLabel()}</span>
+        <span className="index">
+          {getLabel({
+            index: props.index,
+            cover: props.cover,
+            halfImage: props.halfImage,
+            length: props.length,
+          })}
+        </span>
         <img
           style={{
             maxWidth: "100px",

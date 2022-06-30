@@ -217,10 +217,11 @@ body {
 }
 
 .upload {
-  background-image: url("img/uploadicon.png");
+  /* background-image: url("img/uploadicon.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-blend-mode: soft-light;
+  background-blend-mode: soft-light; */
+  border-color: rgb(50, 50, 50);
   border-style: dashed !important;
 }
 
@@ -229,7 +230,7 @@ body {
   text-align: center;
   font-size: 12px;
   position: absolute;
-  top: 20%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: rgba(255, 255, 255, 0.311);
