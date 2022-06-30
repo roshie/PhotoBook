@@ -122,9 +122,9 @@ export default function Home(props) {
                 <span className="text-light">Anywhere and at Any device</span>.
               </div>
               <div className="mx-5 mt-3">
-                <button type="button" class="btn btn-outline-light">
+                <a href="/" class="btn btn-outline-light">
                   Coming Soon
-                </button>
+                </a>
               </div>
             </div>
           </div>
