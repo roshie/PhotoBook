@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -37,11 +38,19 @@ export function validateAlbumCode(code) {
   });
 }
 
-export function createAlbumDoc(data) {
-  // Add a new document with a generated id.
-  return addDoc(collection(db, "Albums"), data).then((docRef) => {
-    return docRef.id;
-  });
+export async function createAlbumDoc(data, password) {
+  if (data.passCode === 1) {
+    const auth = getAuth();
+    await createUserWithEmailAndPassword(auth, data.email, password);
+  }
+
+  return addDoc(collection(db, "Albums"), data)
+    .then((docRef) => {
+      return docRef.id;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 export function checkSession(code) {
