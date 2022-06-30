@@ -1,4 +1,4 @@
-const { response } = require("express");
+const { response, request } = require("express");
 const Storage = require("../models/storage");
 
 const getSheet = async (req, res = response) => {
@@ -34,9 +34,8 @@ const getSheetNames = async (req, res) => {
     for await (const sheet of iterator) {
       sheetNames.push(sheet.name);
       if (sheet.name.startsWith("cover")) sheetDetails.cover = true;
-      else if (sheet.name.startsWith("first-page"))
-        sheetDetails.firstPage = true;
-      else if (sheet.name.startsWith("last-page")) sheetDetails.lastPage = true;
+      else if (sheet.name.startsWith("first")) sheetDetails.firstPage = true;
+      else if (sheet.name.startsWith("last")) sheetDetails.lastPage = true;
       else sheetDetails.innerSheetsCount++;
     }
 
@@ -45,11 +44,37 @@ const getSheetNames = async (req, res) => {
       sheetDetails,
     });
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 };
 
-const postSheets = async (req, res = response) => {};
+const postSheets = async (req, res, next) => {
+  const { title } = req.body;
+  const storage = new Storage();
+  const { createContainerResponse, containerName } =
+    await storage.createContainer(title);
+
+  if (!createContainerResponse.requestId) {
+    console.log(createContainerResponse);
+    res.status(500).json({
+      message: "error",
+      ...createContainerResponse,
+    });
+    return;
+  }
+
+  try {
+    await storage.uploadImages(containerName, req.files);
+  } catch (e) {
+    res.status(500).json({ message: "error", error: e });
+    await storage.deleteContainer(containerName);
+    return;
+  } finally {
+    console.log("Uploaded");
+  }
+  res.status(200).json({ message: "success", containerId: containerName });
+};
 
 module.exports = {
   getSheet,

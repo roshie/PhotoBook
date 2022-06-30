@@ -4,6 +4,7 @@ const Storage = require("../models/storage");
 const testContainer = "dinesh-kiruthika-a2d7e5";
 const testBlobName = "1.jpg";
 const testURL = "https://gravitystudio.blob.core.windows.net/";
+const testTitle = "Liara's Baptism Album";
 
 describe("Testing Azure Blob Storage - Retrieval", function () {
   const storage = new Storage();
@@ -25,5 +26,16 @@ describe("Testing Azure Blob Storage - Retrieval", function () {
       testBlobName
     );
     expect(typeof blobData).to.equal("string");
+  });
+});
+
+describe("Testing Azure Blob Storage - Storing", function () {
+  const storage = new Storage();
+  it("Is creating Container", async () => {
+    const response = await storage.createContainer(testTitle);
+    console.log(response);
+    expect(typeof response.createContainerResponse.requestId).to.equal(
+      "string"
+    );
   });
 });

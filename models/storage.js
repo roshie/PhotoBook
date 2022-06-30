@@ -38,15 +38,45 @@ class Storage {
     return downloaded;
   }
 
+  async uploadImages(containerName, files) {
+    try {
+      const containerClient =
+        this.blobServiceClient.getContainerClient(containerName);
+
+      for (const file of files) {
+        const blockBlobClient = await containerClient.getBlockBlobClient(
+          file.originalname
+        );
+        // Upload buffer
+        await blockBlobClient.uploadData(file.buffer);
+      }
+    } catch (e) {
+      console.log(e);
+      return { message: "error" };
+    }
+  }
+
   async createContainer(name) {
+    /**
+     * @param title - title of the container
+     * @returns { createContainerResponse, containerName }
+     */
+    name = name.replace(/[^a-z0-9]/gi, "");
     const containerName =
-      name
-        .substring(0, name.length() > 15 ? 15 : name.length())
-        .toLowerCase()
-        .replace(" ", "-") + uuidv1();
-    const containerClient = blobServiceClient.getContainerClient(containerName);
+      name.substring(0, name.length > 15 ? 15 : name.length).toLowerCase() +
+      uuidv1();
+    const containerClient =
+      this.blobServiceClient.getContainerClient(containerName);
     // Create the container
     const createContainerResponse = await containerClient.create();
+    return { createContainerResponse, containerName };
+  }
+
+  async deleteContainer(containerName) {
+    const containerClient =
+      this.blobServiceClient.getContainerClient(containerName);
+    const deleteContainerResponse = await containerClient.delete();
+    return deleteContainerResponse;
   }
 }
 
