@@ -4,7 +4,6 @@ import {
   getFirestore,
   collection,
   query,
-  where,
   getDocs,
   addDoc,
 } from "firebase/firestore";
@@ -28,7 +27,7 @@ export function validateAlbumCode(code) {
     var valid = false;
     var data = null;
     querySnapshot.forEach((doc) => {
-      if (doc.id == code) {
+      if (doc.id === code) {
         console.log("Album Exists");
         valid = true;
         data = doc.data();

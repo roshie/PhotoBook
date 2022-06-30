@@ -23,8 +23,11 @@ export default function Home(props) {
   const auth = getAuth();
 
   useEffect(() => {
+    document.title = `Album Viewer | Gravity Studio`;
+
     const code = new URLSearchParams(props.location.search).get("c");
     if (code) setAlbumCode(code);
+    // eslint-disable-next-line
   }, []);
 
   const goToAlbum = (e) => {
@@ -36,14 +39,12 @@ export default function Home(props) {
       signInWithEmailAndPassword(auth, albumData.email, password)
         .then((userCredential) => {
           // Signed in
-          const user = userCredential.user;
           // Move to next page (Album)
           console.log("Success");
           setPasswordVerified(true);
           setLoading(false);
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
           console.log(errorMessage);
           setLoading(false);
@@ -67,7 +68,7 @@ export default function Home(props) {
               setPasswordRequired(true);
               setAlbumCodeVerified(true);
               const user = auth.currentUser;
-              if (user != null && user.email == data.email) {
+              if (user !== null && user.email === data.email) {
                 // Move to next page (Album)
                 setPasswordRequired(false);
                 console.log("Success");
@@ -121,7 +122,9 @@ export default function Home(props) {
                 <span className="text-light">Anywhere and at Any device</span>.
               </div>
               <div className="mx-5 mt-3">
-                <a class="btn btn-outline-light">Coming Soon</a>
+                <button type="button" class="btn btn-outline-light">
+                  Coming Soon
+                </button>
               </div>
             </div>
           </div>

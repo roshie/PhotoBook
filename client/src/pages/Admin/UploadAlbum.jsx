@@ -76,7 +76,7 @@ export default function UploadAlbum() {
   const removeImg = (index) => {
     return new Promise((resolve, reject) => {
       let remainingFiles = droppedFiles.filter((val, inx) => {
-        return inx != index;
+        return inx !== index;
       });
       if (remainingFiles.length <= 0) {
         setDroppedFiles([]);
@@ -125,12 +125,12 @@ export default function UploadAlbum() {
   useEffect(() => {
     if (requirePasscode) setPasscode("");
     if (
-      name != "" &&
-      email != "" &&
+      name !== "" &&
+      email !== "" &&
       width !== 0 &&
       height !== 0 &&
       droppedFiles.length > 0 &&
-      (!requirePasscode || (requirePasscode && passCode != ""))
+      (!requirePasscode || (requirePasscode && passCode !== ""))
     )
       setDisabled(false);
     else setDisabled(true);
@@ -156,6 +156,7 @@ export default function UploadAlbum() {
               View Album{" "}
               <a
                 target="_blank"
+                rel="noreferrer"
                 className="btn btn-pink text-light m-2"
                 href={`${appUrl}/album/${albumId}`}
               >
@@ -280,7 +281,7 @@ export default function UploadAlbum() {
                   </label>
                 </div>
                 <div className="col-12 col-md-6 border border-dark rounded m-2 text-center text-dark p-0 overflow-hidden d-flex justify-content-center align-items-center">
-                  {previewImg == null ? (
+                  {previewImg === null ? (
                     <div className="m-5">No images selected</div>
                   ) : previewImgLoading ? (
                     <div class={`lds-ring my-5`}>
@@ -292,7 +293,7 @@ export default function UploadAlbum() {
                   ) : (
                     <img
                       src={previewImg}
-                      alt="image"
+                      alt="Preview"
                       style={{
                         maxWidth: "300px",
                       }}
@@ -382,11 +383,14 @@ export default function UploadAlbum() {
 }
 
 const getLabel = ({ index, cover, halfImage, length, fileName = false }) => {
-  if (cover && index == 0) {
+  if (cover && index === 0) {
     return fileName ? "cover.jpg" : "Cover";
-  } else if ((cover && halfImage && index == 1) || (halfImage && index == 0)) {
+  } else if (
+    (cover && halfImage && index === 1) ||
+    (halfImage && index === 0)
+  ) {
     return fileName ? "first.jpg" : "F";
-  } else if (halfImage && index == length - 1) {
+  } else if (halfImage && index === length - 1) {
     return fileName ? "last.jpg" : "L";
   } else if (cover && halfImage) {
     return fileName ? `${index - 1}.jpg` : index - 1;
@@ -431,6 +435,7 @@ const ImgCard = (props) => {
             marginTop: "10px",
             display: loading ? "none" : "block",
           }}
+          alt="Thumbnail"
           title={props.imageName}
           src={URL.createObjectURL(props.image)}
           onLoad={() => {

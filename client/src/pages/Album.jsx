@@ -2,7 +2,6 @@ import React from "react";
 import Layout from "./Components/Layout";
 import "./../Album.css";
 import whiteImg from "../img/white-texture.jpg";
-import BlueCover from "../img/blue-cover.jpg";
 import RedCover from "../img/red-cover.png";
 import Loader from "../img/AlbumLoader.gif";
 import HTMLFlipBook from "react-pageflip";
@@ -33,19 +32,20 @@ export function AlbumPropLoader(props) {
       setValid(!!_isValid);
       if (_isValid) setData(_data);
     });
+    // eslint-disable-next-line
   }, []);
 
   if (isValid && data) {
     const user = auth.currentUser;
     if (
-      (data.passCode == 1 && user != null && user.email == data.email) ||
-      data.passCode == 0
+      (data.passCode === 1 && user !== null && user.email === data.email) ||
+      data.passCode === 0
     ) {
       return <Album data={data} code={code} />;
     } else {
       return <Redirect to={`/?c=${code}`} />;
     }
-  } else if (isValid == false) {
+  } else if (isValid === false) {
     console.log("Redirecting 404");
     return <Redirect to="/404" />;
   } else {
@@ -81,6 +81,7 @@ function Album(props) {
       .catch((err) => {
         setError(true);
       });
+    // eslint-disable-next-line
   }, []);
 
   const showFullScreen = (elem) => {
@@ -112,8 +113,8 @@ function Album(props) {
 
   const onPage = (e) => {
     setCurrentPage(e.data);
-    if (e.data == 0) setAlbumPositionTranslation("-25%");
-    else if (e.data == flipbookPagesCount - 1)
+    if (e.data === 0) setAlbumPositionTranslation("-25%");
+    else if (e.data === flipbookPagesCount - 1)
       setAlbumPositionTranslation("25%");
     else setAlbumPositionTranslation("0%");
   };
@@ -159,7 +160,7 @@ function Album(props) {
           <div>
             <img src={Loader} alt="Loading..." style={{ width: "50vw" }} />
           </div>
-          <div
+          {/*<div
             class="progress"
             style={{
               width: "50%",
@@ -167,15 +168,15 @@ function Album(props) {
               height: "0.7rem",
             }}
           >
-            {/* <div
+             <div
               class="progress-bar progress-purple"
               role="progressbar"
               style={{ width: this.state.loadedPercentage }}
               aria-valuenow={this.state.loadedPages}
               aria-valuemin={0}
               aria-valuemax={this.pages}
-            ></div> */}
-          </div>
+            ></div> 
+          </div>*/}
           <span className="m-5 text-light">Launching Your Album</span>
         </div>
       )}
@@ -204,9 +205,9 @@ function Album(props) {
             mobileScrollSupport={true}
             showCover={true}
             className="Album-content"
-            onFlip={((e) => {
+            onFlip={(e) => {
               onPage(e);
-            }).bind(onPage)}
+            }}
             onInit={onInit}
             style={{ transform: `translateX(${albumPositionTranslation})` }}
             ref={flipBook}
@@ -293,7 +294,7 @@ const PageCover = React.forwardRef((props, ref) => {
         });
     } else {
       setLoading(false);
-    }
+    } // eslint-disable-next-line
   }, []);
   return (
     <div className="page cover overflow-hidden" ref={ref} data-density="hard">
@@ -353,7 +354,7 @@ const Page = React.forwardRef((props, ref) => {
         backgroundPosition: "center",
       });
       setLoading(false);
-    }
+    } // eslint-disable-next-line
   }, []);
   return (
     <div className="page" ref={ref}>

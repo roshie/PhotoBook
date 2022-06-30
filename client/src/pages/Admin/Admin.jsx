@@ -21,16 +21,18 @@ export default function Admin(props) {
   const auth = getAuth();
 
   useEffect(() => {
+    document.title = "Admin | Gravity Studio";
     const _user = auth.currentUser;
     setUser(_user);
     setPreviousPage(new URLSearchParams(props.location.search).get("page"));
+    // eslint-disable-next-line
   }, []);
 
   const login = () => {
     setLoading(true);
     setError(false);
     setPasswordError(false);
-    if (email.trim() == AdminEmail) {
+    if (email.trim() === AdminEmail) {
       setPersistence(auth, browserSessionPersistence).then(() => {
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
@@ -41,7 +43,6 @@ export default function Admin(props) {
             console.log("Success");
           })
           .catch((error) => {
-            const errorCode = error.code;
             const errorMessage = error.message;
             setPasswordError(true);
             setUser(null);

@@ -7,6 +7,7 @@ export default function PrivateRoute(props) {
   const [user, setUser] = useState("Loading");
   useEffect(() => {
     setUser(auth.currentUser);
+    // eslint-disable-next-line
   }, []);
 
   if (user == null) {
